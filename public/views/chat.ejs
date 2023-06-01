@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/styles/chat.css" />
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+    integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+    crossorigin="anonymous"></script>
+  <title>Chat 😎</title>
+</head>
+
+<body>
+  <header>
+    <h1>
+      Welcome, <%= username %>
+    </h1>
+  </header>
+  <main>
+    <section>
+      <div id="messages-container">
+        <div id='messages'>
+        </div>
+      </div>
+      <form>
+        <input type="text" name="message" placeholder="Type a message" required />
+        <button type="submit" aria-label='send-message-button'>➡</button>
+      </form>
+    </section>
+  </main>
+  <script>
+    const socket = io({
+      query: {
+        username: '<%= username %>'
+      }
+    })
+    const messages = document.getElementById('messages')
+    const form = document.querySelector('form')
+    const input = document.querySelector('input[name="message"]')
+    const username = '<%= username %>'
+
+    const createNewMessage = (text, from, isFromMe = false) => {
+      console.log(text, from, isFromMe)
+      const message = document.createElement('p')
+      const username = document.createElement('span')
+      username.textContent = from
+      message.textContent = text
+      message.classList.add('message')
+      if (isFromMe) message.classList.add('me')
+      username.style.display = 'block'
+      message.prepend(username)
+      messages.appendChild(message)
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const message = input.value
+      socket.emit('message', message)
+      createNewMessage(message, username, true)
+      input.value = ''
+    })
+
+    socket.on("session", ({ username }) => {
+      localStorage.setItem("chat-session", JSON.stringify({ username }))
+    })
+
+    socket.on("message-received", (data) => {
+      createNewMessage(data.message, data.from.username)
+    })
+  </script>
+</body>
+
+
+</html>
