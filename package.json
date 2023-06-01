@@ -1,0 +1,23 @@
+{
+  "name": "clase26",
+  "version": "1.0.0",
+  "description": "Example of a simple web server with express and ejs",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch index.js",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "express",
+    "ejs"
+  ],
+  "author": "Santiago Ocón",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "socket.io": "^4.6.2"
+  }
+}
